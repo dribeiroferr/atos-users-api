@@ -1,4 +1,4 @@
-import { ErrorBase } from "../../../utils/errors/errors";
+import { ErrorBase } from "../../../utils/errors";
 
 type ErrorName = 
     | 'GET_PROJECT_ERROR'
