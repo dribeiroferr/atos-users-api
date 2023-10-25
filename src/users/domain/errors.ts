@@ -10,6 +10,6 @@ export class UserEntityErrors extends ErrorBase<UserErrorNameType, UserErrorMess
             name: errorName,
             message: errorMessage, 
             code: errorCode
-        })
+        });
     }
 }

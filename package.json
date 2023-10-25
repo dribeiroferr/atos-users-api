@@ -12,9 +12,11 @@
     "@types/bcrypt": "^5.0.0",
     "@types/dotenv": "^8.2.0",
     "@types/jest": "^29.5.2",
+    "@types/jsonwebtoken": "^9.0.4",
     "@types/node": "^20.2.5",
     "@types/pg": "^8.10.2",
     "@types/uuid": "^9.0.3",
+    "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.59.8",
     "babel-jest": "^29.5.0",
@@ -51,9 +53,11 @@
     "class-validator": "^0.14.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
     "typedoc": "^0.24.8",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "winston": "^3.11.0"
   }
 }

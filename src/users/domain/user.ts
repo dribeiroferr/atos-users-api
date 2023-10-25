@@ -8,11 +8,19 @@ import {
     UpdateDateColumn, 
     DeleteDateColumn
 } from "typeorm";
+import { TokenService } from "../../auth/services/tokenService";
+
+import * as dotenv from "dotenv";
 
 import { v4 as uuid } from "uuid";
 import * as bcrypt from "bcrypt";
 
 import { UserEntityErrors } from "./errors";
+import { TokenPayloadDTO } from "../../infrastructure/dtos/tokens/tokenPayloadDTO";
+
+dotenv.config({
+    path: process.env.NODE_ENV = 'dev' ?'.env.dev' : '.env.production'
+});
 
 /**
  * 
@@ -28,66 +36,49 @@ import { UserEntityErrors } from "./errors";
 export class User {
 
     @PrimaryGeneratedColumn('uuid')
-    readonly _id: string;
+    readonly id: string;
 
+    @Column()
     status: string;
+
+    @Column()
+    role: string;
     
-    private _username: string;
+    @Column()
+    private username: string;
 
-    private _email: string;
+    @Column()
+    private token: string;
 
-    private _password: string;
+    @Column({unique: true})
+    private email: string;
 
-    private _account: string; // many to one Account
+    @Column()
+    private password: string;
 
-    private _firstName: string;
+    @Column()
+    private account: string; // many to one Account
 
-    private _lastname: string; 
+    @Column()
+    private firstName: string;
 
-    private _isActive: boolean;
+    @Column()
+    private lastName: string; 
 
-    private _lastLogin: Date;
+    @Column()
+    private isActive: boolean;
+
+    @Column()
+    private lastLogin: Date;
     
+    @CreateDateColumn()
     createdAt: Date;
 
+    @UpdateDateColumn()
     updatedAt: Date;
 
+    @DeleteDateColumn()
     deletedAt: Date;
-
-    // Get full name
-    get fullName(): string { 
-        return `${this._firstName} ${this._lastname}`;
-    };
-
-    // Get Company (account)
-    get company(): string { 
-        return this._account;
-    };
-
-    // Get Username
-    get username(): string { 
-        return this._username;
-    }
-
-    // Get Email
-    get email(): string { 
-        return this._email;
-    }
-
-    // Get Password
-    get password(): string { 
-        return this._password;
-    }
-
-    // Get IsActive
-    get isActive(): boolean { 
-        return this._isActive
-    }
-
-    // Get LastLogin
-    get lastLogin(): Date {
-        return this._lastLogin;
-    }
 
     private validateEmail():boolean {
         // to be implemented...
@@ -102,17 +93,113 @@ export class User {
     // Hash Password 
     @BeforeInsert()
     @BeforeUpdate()
-    async hashPassword() 
+    public async hashPassword() 
     {
-        if(this._password) { 
-            this._password = await bcrypt.hash(this._password, 8) 
+        if(this.password) { 
+            this.password = await bcrypt.hash(this.password, process.env.BCRYPT_SALTS); 
         }
     }
 
     // Compare password for authentication
-    async checkPassword(candidatePassword: string): Promise<boolean> { 
-        return bcrypt.compare(candidatePassword, this._password);
+    public async checkPassword(candidatePassword: string): Promise<boolean> { 
+        return bcrypt.compare(candidatePassword, this.password);
     }
+
+    public generateAccessToken(): string{ 
+        const payload: TokenPayloadDTO = { 
+            sub: this.id,
+            email: this.email,
+            roles: this.role,
+            permisions: this.permission
+
+
+
+        }
+    }
+
+
+
+        // // Get First name
+        // public get firstName(): string { 
+        //     return this.firstName;
+        // };
+        // // Get Last name
+        // public get lastName(): string { 
+        //     return this.lastName;
+        // };
+        // // Get full name
+        // public get fullName(): string { 
+        //     return `${this.firstName} ${this.lastName}`;
+        // };
+    
+        // // Get Company (account)
+        // public get company(): string { 
+        //     return this.account;
+        // };
+    
+        // // Get Username
+        // public get username(): string { 
+        //     return this.username;
+        // }
+    
+        // // Get Email
+        // public get email(): string { 
+        //     return this.email;
+        // }
+    
+        // // Get Password
+        // public get password(): string { 
+        //     return this.password;
+        // }
+    
+        // // Get IsActive
+        // public get isActive(): boolean { 
+        //     return this.isActive
+        // }
+    
+        // // Get LastLogin
+        // public get lastLogin(): Date {
+        //     return this.lastLogin;
+        // }
+    
+        // // Get Company (account)
+        // public set company(account: string){ 
+        //     this.account = account;
+        // };
+    
+        // // set Username
+        // public set username(username: string){ 
+        //     this.username = username;
+        // }
+        
+        // // set Username
+        // public set firstName(firstName: string){ 
+        //     this.firstName = firstName;
+        // };
+        // // set Username
+        // public set lastName(lastName: string){ 
+        //     this.lastName = lastName;
+        // };
+    
+        // // set Email
+        // public set email(email: string){ 
+        //     this.email = email;
+        // }
+    
+        // // set Password
+        // public set password(password: string){ 
+        //     this.password = password;
+        // }
+    
+        // // set IsActive
+        // public set isActive(activity: boolean) { 
+        //     this.isActive = activity;
+        // }
+    
+        // // set LastLogin
+        // public set lastLogin(date: Date){
+        //     this.lastLogin = date;
+        // }
 
     /**
      * 
@@ -126,5 +213,6 @@ export class User {
      * lead, ads ? 
      * 
      */
+
 
 }

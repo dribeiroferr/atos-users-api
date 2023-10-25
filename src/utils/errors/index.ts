@@ -14,7 +14,7 @@ export class ErrorBase<T extends string, U extends string, V extends string> ext
          name,
          message,
          code
-        }: {
+        }:{
             name: T;
             message: U, 
             code: V
